@@ -50,6 +50,11 @@ if ($argv[1] == "i3") then
 	set WM = "i3"
 endif
 
+if ($argv[1] == "mate") then 
+	set WM = "mate"
+endif
+
+
 if ("$WM" == "NONE") then
 	echo "FreeBSD 5 Minute Desktop Build"
 	echo "Usage: $argv[0] i3 or fluxbox"
@@ -76,6 +81,12 @@ else if ($WM == "fluxbox") then
 	pkg install -y fluxbox
 	foreach dir (`ls /usr/home`)
 		echo "/usr/local/bin/fluxbox" >> /usr/home/$dir/.xinitrc
+		chown $dir /usr/home/$dir/.xinitrc
+	end
+else if ($WM == "mate") then
+	pkg install -y xf86-video-fbdev mate-desktop mate
+	foreach dir (`ls /usr/home`)
+		echo "/usr/local/bin/mate" >> /usr/home/$dir/.xinitrc
 		chown $dir /usr/home/$dir/.xinitrc
 	end
 endif
@@ -106,6 +117,7 @@ echo 'autoboot_delay="1"' >> /boot/loader.conf
 #rc updates for X
 sysrc hald_enable="YES"
 sysrc dbus_enable="YES"
+moused_enable="YES"
 
 #sysctl values for chromium,audio and disabling CTRL+ALT+DELETE
 cat << EOF >> /etc/sysctl.conf
